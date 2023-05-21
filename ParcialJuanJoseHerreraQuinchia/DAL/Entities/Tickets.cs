@@ -1,4 +1,7 @@
-﻿namespace ParcialJuanJoseHerreraQuinchia.DAL.Entities
+﻿using System.ComponentModel.DataAnnotations;
+using System.Xml.Linq;
+
+namespace ParcialJuanJoseHerreraQuinchia.DAL.Entities
 {
     public class Tickets
     {
