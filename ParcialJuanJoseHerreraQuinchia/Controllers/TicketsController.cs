@@ -35,8 +35,32 @@ namespace ParcialJuanJoseHerreraQuinchia.Controllers
             try
             {
                 Ticket.UseDate = DateTime.UtcNow;
-                Ticket.EntranceGate = "Norte";
                 Ticket.IsUsed = true;
+
+                Random random = new Random();
+                int numberRandom = random.Next(1, 5);
+
+                string Entrance = "";
+
+                switch (numberRandom)
+                {
+                    case 1:
+                        Entrance = "Norte";
+                        break;
+                    case 2:
+                        Entrance = "Oriental";
+                        break;
+                    case 3:
+                        Entrance = "Occidental";
+                        break;
+                    case 4:
+                        Entrance = "Sur";
+                        break;
+                    default:
+                        break;
+                }
+
+                Ticket.EntranceGate = Entrance;
                 _context.Tickets.Update(Ticket);
                 await _context.SaveChangesAsync(); // Aquí es donde se hace el Update...
             }
@@ -54,7 +78,7 @@ namespace ParcialJuanJoseHerreraQuinchia.Controllers
 
         [HttpPost]
         [Route("Income")]
-        public async Task<IActionResult> ValidateIncomeTicket(Guid ticketId, string entranceGate)
+        public async Task<IActionResult> ValidateIncomeTicket(Guid ticketId)
         {
             try
             {
@@ -70,9 +94,7 @@ namespace ParcialJuanJoseHerreraQuinchia.Controllers
                     return Ok($"Boleta ya usada. Fecha de uso: {ticket.UseDate}, Portería: {ticket.EntranceGate}");
                 }
 
-                ticket.IsUsed = true;
-                ticket.UseDate = DateTime.Now;
-                ticket.EntranceGate = entranceGate;
+                UpdateTicket(ticket);
 
                 await _context.SaveChangesAsync();
 
