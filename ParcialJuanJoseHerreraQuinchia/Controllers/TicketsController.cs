@@ -30,7 +30,7 @@ namespace ParcialJuanJoseHerreraQuinchia.Controllers
 
         [HttpPut, ActionName("Update")]
         [Route("Update/{id}")]
-        public async Task<ActionResult> UpdateTicket(Guid ticketId)
+        public async Task<ActionResult> UpdateTicket(Guid? ticketId)
         {
             var Ticket = await _context.Tickets.FirstOrDefaultAsync(c => c.Id == ticketId);
             try
@@ -79,9 +79,11 @@ namespace ParcialJuanJoseHerreraQuinchia.Controllers
             return Ok(Ticket);
         }
 
+
+
         [HttpPost]
-        [Route("Income")]
-        public async Task<IActionResult> ValidateIncomeTicket(Guid ticketId)
+        [Route("ValidateIncomeTicket")]
+        public async Task<IActionResult> ValidateIncomeTicket(Guid? ticketId)
         {
             try
             {
@@ -89,29 +91,29 @@ namespace ParcialJuanJoseHerreraQuinchia.Controllers
 
                 if (ticket == null)
                 {
-                    return Conflict("Boleta no válida");
+                    ViewData["Message"] = "Boleta no válida";
                 }
-
-                if (ticket.IsUsed)
+                else if (ticket.IsUsed)
                 {
-                    return Ok($"Boleta ya usada. Fecha de uso: {ticket.UseDate}, Portería: {ticket.EntranceGate}");
+                    ViewData["Message"] = $"Boleta ya usada. Fecha de uso: {ticket.UseDate}, Portería: {ticket.EntranceGate}";
                 }
-
-                UpdateTicket(ticket.Id);
-
-                await _context.SaveChangesAsync();
-
-                return Ok("Boleta válida, puede ingresar al concierto");
+                else
+                {
+                    UpdateTicket(ticket.Id);
+                    await _context.SaveChangesAsync();
+                    ViewData["Message"] = "Boleta válida, puede ingresar al concierto";
+                }
             }
             catch (InvalidOperationException ex)
             {
-                return BadRequest(ex.Message);
+                ViewData["Message"] = ex.Message;
             }
             catch (DbUpdateException)
             {
-                return BadRequest("Error al actualizar la boleta. Por favor, inténtelo nuevamente más tarde.");
+                ViewData["Message"] = "Error al actualizar la boleta. Por favor, inténtelo nuevamente más tarde.";
             }
-       
+
+            return View("Income", ticketId);
         }
 
     }
