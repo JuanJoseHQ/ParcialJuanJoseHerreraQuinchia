@@ -30,10 +30,13 @@ namespace ParcialJuanJoseHerreraQuinchia.Controllers
 
         [HttpPut, ActionName("Update")]
         [Route("Update/{id}")]
-        public async Task<ActionResult> UpdateTicket(Tickets Ticket)
+        public async Task<ActionResult> UpdateTicket(Guid ticketId)
         {
+            var Ticket = await _context.Tickets.FirstOrDefaultAsync(c => c.Id == ticketId);
             try
             {
+                
+
                 Ticket.UseDate = DateTime.UtcNow;
                 Ticket.IsUsed = true;
 
@@ -94,7 +97,7 @@ namespace ParcialJuanJoseHerreraQuinchia.Controllers
                     return Ok($"Boleta ya usada. Fecha de uso: {ticket.UseDate}, Portería: {ticket.EntranceGate}");
                 }
 
-                UpdateTicket(ticket);
+                UpdateTicket(ticket.Id);
 
                 await _context.SaveChangesAsync();
 
