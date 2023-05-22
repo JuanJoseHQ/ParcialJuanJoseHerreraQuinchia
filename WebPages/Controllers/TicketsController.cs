@@ -48,16 +48,16 @@ namespace WebPages.Controllers
 
                 if (ticket == null)
                 {
-                    ViewData["Message"] = "Boleta no válida";
+                    ViewData["Message"] = "invalid ticket";
                 }
                 else if (ticket.IsUsed)
                 {
-                    ViewData["Message"] = $"Boleta ya usada. Fecha de uso: {ticket.UseDate}, Portería: {ticket.EntranceGate}";
+                    ViewData["Message"] = $"Ticket already used. Date of use: {ticket.UseDate}, porter's lodge: {ticket.EntranceGate}";
                 }
                 else
                 {
                     await UpdateTicket(ticket.Id, ticket);
-                    ViewData["Message"] = "Boleta válida, puede ingresar al concierto";
+                    ViewData["Message"] = "Valid ticket, you can enter the concert.";
                 }
             }
             catch (InvalidOperationException ex)
@@ -66,7 +66,7 @@ namespace WebPages.Controllers
             }
             catch (DbUpdateException)
             {
-                ViewData["Message"] = "Error al actualizar la boleta. Por favor, inténtelo nuevamente más tarde.";
+                ViewData["Message"] = "Error updating the ticket. Please try again later.";
             }
             
             return View("Income", ticketId);

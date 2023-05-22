@@ -14,7 +14,7 @@ namespace ParcialJuanJoseHerreraQuinchia.DAL.Entities
         public DateTime? UseDate { get; set; }
 
         [Display(Name = "Usada")]
-        [Required(ErrorMessage = "El campo {0} es obligatorio.")]
+        [Required(ErrorMessage = "The field {0} is required.")]
         public Boolean IsUsed { get; set; }
 
         [Display(Name = "Localidad")]
