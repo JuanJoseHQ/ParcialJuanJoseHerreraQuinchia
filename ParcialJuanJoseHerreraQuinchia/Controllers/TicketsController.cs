@@ -6,6 +6,8 @@ using System.Net.Sockets;
 
 namespace ParcialJuanJoseHerreraQuinchia.Controllers
 {
+    [Route("api/[controller]")]
+    [ApiController]
     public class TicketsController : Controller
     {
         private readonly DataBaseContext _context;
@@ -30,15 +32,14 @@ namespace ParcialJuanJoseHerreraQuinchia.Controllers
 
         [HttpPut, ActionName("Update")]
         [Route("Update/{id}")]
-        public async Task<ActionResult> UpdateTicket(Guid? ticketId)
+        public async Task<ActionResult> UpdateTicket(Guid? ticketId, Tickets ticket)
         {
-            var Ticket = await _context.Tickets.FirstOrDefaultAsync(c => c.Id == ticketId);
             try
             {
-                
+                //if(ticketId != ticket.Id) return NotFound("Ticket not found");
 
-                Ticket.UseDate = DateTime.UtcNow;
-                Ticket.IsUsed = true;
+                ticket.UseDate = DateTime.UtcNow;
+                ticket.IsUsed = true;
 
                 Random random = new Random();
                 int numberRandom = random.Next(1, 5);
@@ -63,9 +64,9 @@ namespace ParcialJuanJoseHerreraQuinchia.Controllers
                         break;
                 }
 
-                Ticket.EntranceGate = Entrance;
-                _context.Tickets.Update(Ticket);
-                await _context.SaveChangesAsync(); // Aquí es donde se hace el Update...
+                ticket.EntranceGate = Entrance;
+                _context.Tickets.Update(ticket);
+                await _context.SaveChangesAsync();
             }
             catch (DbUpdateException dbUpdateException)
             {
@@ -76,10 +77,8 @@ namespace ParcialJuanJoseHerreraQuinchia.Controllers
                 return Conflict(ex.Message);
             }
 
-            return Ok(Ticket);
+            return Ok(ticket);
         }
-
-
 
         [HttpPost]
         [Route("ValidateIncomeTicket")]
@@ -91,29 +90,29 @@ namespace ParcialJuanJoseHerreraQuinchia.Controllers
 
                 if (ticket == null)
                 {
-                    ViewData["Message"] = "Boleta no válida";
+                    return Conflict("Boleta no válida");
                 }
                 else if (ticket.IsUsed)
                 {
-                    ViewData["Message"] = $"Boleta ya usada. Fecha de uso: {ticket.UseDate}, Portería: {ticket.EntranceGate}";
+                    return Ok($"Boleta ya usada. Fecha de uso: {ticket.UseDate}, Portería: {ticket.EntranceGate}");
                 }
                 else
                 {
-                    UpdateTicket(ticket.Id);
+                    UpdateTicket(ticket.Id, ticket);
                     await _context.SaveChangesAsync();
-                    ViewData["Message"] = "Boleta válida, puede ingresar al concierto";
+                    return Ok("Boleta válida, puede ingresar al concierto");
                 }
             }
             catch (InvalidOperationException ex)
             {
-                ViewData["Message"] = ex.Message;
+                return Conflict(ex.Message);
             }
             catch (DbUpdateException)
             {
-                ViewData["Message"] = "Error al actualizar la boleta. Por favor, inténtelo nuevamente más tarde.";
+                return Conflict("Error al actualizar la boleta. Por favor, inténtelo nuevamente más tarde.");
             }
 
-            return View("Income", ticketId);
+            
         }
 
     }

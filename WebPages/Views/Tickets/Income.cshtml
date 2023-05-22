@@ -1,17 +1,27 @@
 ﻿@model Guid?
 
-<h2>Validar Ticket de Ingreso</h2>
-
-@if (Model.HasValue)
-{
-    <h4>Resultado de la validación:</h4>
-    <p>@ViewData["Message"]</p>
+@{
+    ViewData["Title"] = "Income";
 }
 
-<form method="post" action="/Tickets/ValidateIncomeTicket">
+<h2>Income</h2>
+
+@if (ViewData["Message"] != null)
+{
+    <div class="alert alert-info">
+        @ViewData["Message"]
+    </div>
+}
+
+<form method="post" asp-action="ValidateIncomeTicket">
     <div class="form-group">
         <label for="ticketId">ID del ticket:</label>
-        <input type="text" class="form-control" id="ticketId" name="ticketId" required />
+        <input type="text" class="form-control" id="ticketId" name="ticketId" required>
     </div>
     <button type="submit" class="btn btn-primary">Validar</button>
+
+    <div class="form-group">
+        <input type="submit" value="Guardar" class="btn btn-outline-primary" />
+        <a asp-action="Index" class="btn btn-outline-success">Regresar</a>
+    </div>
 </form>
