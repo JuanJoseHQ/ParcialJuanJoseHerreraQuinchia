@@ -49,16 +49,16 @@ namespace ParcialJuanJoseHerreraQuinchia.Controllers
                 switch (numberRandom)
                 {
                     case 1:
-                        Entrance = "Norte";
+                        Entrance = "North";
                         break;
                     case 2:
-                        Entrance = "Oriental";
+                        Entrance = "Eastern";
                         break;
                     case 3:
-                        Entrance = "Occidental";
+                        Entrance = "Western";
                         break;
                     case 4:
-                        Entrance = "Sur";
+                        Entrance = "South";
                         break;
                     default:
                         break;
@@ -80,40 +80,7 @@ namespace ParcialJuanJoseHerreraQuinchia.Controllers
             return Ok(ticket);
         }
 
-        [HttpPost]
-        [Route("ValidateIncomeTicket")]
-        public async Task<IActionResult> ValidateIncomeTicket(Guid? ticketId)
-        {
-            try
-            {
-                var ticket = await _context.Tickets.FirstOrDefaultAsync(c => c.Id == ticketId);
-
-                if (ticket == null)
-                {
-                    return Conflict("Boleta no válida");
-                }
-                else if (ticket.IsUsed)
-                {
-                    return Ok($"Boleta ya usada. Fecha de uso: {ticket.UseDate}, Portería: {ticket.EntranceGate}");
-                }
-                else
-                {
-                    UpdateTicket(ticket.Id, ticket);
-                    await _context.SaveChangesAsync();
-                    return Ok("Boleta válida, puede ingresar al concierto");
-                }
-            }
-            catch (InvalidOperationException ex)
-            {
-                return Conflict(ex.Message);
-            }
-            catch (DbUpdateException)
-            {
-                return Conflict("Error al actualizar la boleta. Por favor, inténtelo nuevamente más tarde.");
-            }
-
-            
-        }
+        
 
     }
 }
