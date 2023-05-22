@@ -1,6 +1,21 @@
 ﻿@model Guid?
 
-<h2>Validar Ticket de Ingreso</h2>
+<style>
+    .title {
+        text-align: center;
+        font-family: 'Arial Black', sans-serif;
+        background: linear-gradient(45deg, #FF4081, #FFC107);
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        font-size: 32px;
+        margin-bottom: 20px;
+    }
+</style>
+
+<div class="title">
+    <h2>CONCIERTO DE LA BICHOTA</h2>
+</div>
+
 
 @if (Model.HasValue)
 {
@@ -13,7 +28,9 @@
         <label for="ticketId">ID del ticket:</label>
         <input type="text" class="form-control" id="ticketId" name="ticketId" value="@Model" required />
     </div>
-    <button type="submit" class="btn btn-primary">Validar</button>
+    <div class="d-flex justify-content-between">
+        <button type="submit" class="btn btn-primary">Validar</button>
+    </div>
 </form>
 
 
